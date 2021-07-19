@@ -29,6 +29,8 @@ class yf_fetcher:
     _price_url = _yahoo_url+'/v8/finance/chart/'
     _fundamental_url = _yahoo_url+'/v10/finance/quoteSummary/'
     
+    _request_header = {'User-Agent': 'Mozilla/5.0'}
+    
     _valid_subday_intervals = ['1m', '2m', '5m', '15m',
                                '30m', '60m', '90m', '1h']
     _valid_subweek_intervals = _valid_subday_intervals+['1d', '5d']
@@ -194,7 +196,7 @@ class yf_fetcher:
                 xurl += 'split'
         # send request and check for errors
         try:
-            response = requests.get(xurl)
+            response = requests.get(xurl, headers=self._request_header)
             response.raise_for_status()
         except requests.exceptions.HTTPError as err:
             print(err)
@@ -340,7 +342,7 @@ class yf_fetcher:
         else:
             self.wraprint('modules must be a string or list of strings.')
             return
-        response = requests.get(xurl)
+        response = requests.get(xurl, headers=self._request_header)
         if response.status_code != 200:
             print(response.status_code)
             return
@@ -359,7 +361,7 @@ class yf_fetcher:
         xurl = self._options_url+symbol
         if type(expiration) is int:
             xurl += '?date={:d}'.format(expiration)
-        response = requests.get(xurl)
+        response = requests.get(xurl, headers=self._request_header)
         if response.status_code != 200:
             self.wraprint(response.status_code)
             return
